@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>#{msgs.indexWindowTitle}</title>
+</h:head>
+<h:body>
+    <h:outputText value="#{msgs.indexPageTitle}"
+                  style="font-style: italic; font-size: 1.5em"/>
+    <h:form>
+        <h3>Please enter your name and password.</h3>
+        <table>
+            <tr>
+                <td>Name:</td>
+                <td>
+                    <h:inputText value="#{user.name}" id="name"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Password:</td>
+                <td>
+                    <h:inputSecret value="#{user.password}" id="password"/>
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <h:commandButton value="#{msgs.submitButtonPrompt}" action="#{server.login()}"/>
+        <h:commandButton value="Sign Up" action="register"/>
+    </h:form>
+</h:body>
+</html>

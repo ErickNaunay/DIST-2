@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+
+<head>
+    <title>Register</title>
+</head>
+<body>
+<h:form prependId="false">
+    <h:outputText value="Register Page"
+                  style="font-style: italic; font-size: 1.5em"/>
+    <h3>Please enter the name and password to register.</h3>
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td>
+                <h:inputText value="#{user.name}" id="name"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td>
+                <h:inputText value="#{user.password}" id="password"/>
+            </td>
+        </tr>
+    </table>
+    <p>
+        <h:commandButton value="Register" action="#{server.register()}"/>
+    </p>
+</h:form>
+</body>
+</html>

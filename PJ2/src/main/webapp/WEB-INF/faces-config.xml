@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.3" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+    http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd">
+
+        <application>
+        <resource-bundle>
+            <base-name>com.corejsf.messages</base-name>
+            <var>msgs</var>
+        </resource-bundle>
+    </application>
+    <managed-bean>
+        <managed-bean-name>messagebean</managed-bean-name>
+        <managed-bean-class>com.corejsf.MessageManager</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <navigation-rule>
+        <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>home</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>signup</from-outcome>
+            <to-view-id>/signup.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/welcome.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>home</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+</faces-config>

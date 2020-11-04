@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>${msgs.chatWindowTitle}</title>
+</h:head>
+<h:body>
+    <f:websocket channel="incoming">
+        <f:ajax event="userChange"
+                execute="@form" render="@form"/>
+    </f:websocket>
+    <div class="topnav">
+        <a class="active" href="welcome.xhtml">Lobby</a>
+        <a href="messages.xhtml">Message Room</a>
+    </div>
+    <h:form id="form">
+        <h:outputStylesheet library="css" name="style.css"/>
+        <div class="welcome-title">
+            <h3><h:outputText value="#{msgs.chatPrompt}"/> ${user.name}</h3>
+            <h:commandButton style="float:right" value="#{msgs.logoutButtonPrompt}" action="#{server.logout()}"/>
+        </div>
+        <br/>
+        <div class="main-container">
+            <div class="register-container">
+                <table id="registered">
+                    <tr>
+                        <td colspan="2"><p style="font-weight:bold">Registered Users</p></td>
+                    </tr>
+                    <tr>
+                        <th>Online</th>
+                        <th>Offline</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul>
+                                <ui:repeat id="online" value="#{server.onlineUsers}" var="userName">
+                                    <li>#{userName}</li>
+                                </ui:repeat>
+                            </ul>
+                            <!--                            <h:selectOneListbox id="online" size="10">-->
+                            <!--                                <f:selectItems value="#{server.onlineUsers}"/>-->
+                            <!--                            </h:selectOneListbox>-->
+                        </td>
+                        <td>
+                            <ui:repeat id="offline" value="#{server.offlineUsers}" var="userName">
+                                <li>#{userName}</li>
+                            </ui:repeat>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <h:outputText id="newmsn" value="#{server.getUserMessageNotification()}"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="msn-container">
+                <div class="message-title" style="height: 20%">
+                    <h3><h:outputText value="#{msgs.messageAreaPropt}"/></h3>
+                </div>
+                <br/>
+                <br/>
+                <h:outputText value="#{msgs.chooseUserPrompt}"/>
+                <table>
+                    <tr>
+                        <td>
+                            <h:selectManyCheckbox id="recipientUsers" value="#{msm.recipients}" size="10"
+                                                  style="width: 75%">
+                                <f:selectItems value="#{server.allUsers}"/>
+                            </h:selectManyCheckbox>
+                        </td>
+                        <td>
+                            <h:selectBooleanCheckbox id="selectAll" style="width: 80%" value="#{msm.sendToAll}">
+                                Send to All
+                                <f:ajax render="recipientUsers" listener="#{msm.selectAllRecipients()}"/>
+                            </h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: center">
+                            <h:outputText value="#{msgs.messageTitlePormpt}    "/>
+                            <h:inputText id="mtitle" value="${msm.messageTitle}">
+                                <f:ajax resetValues="true"/>
+                            </h:inputText>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputText value="#{msgs.enterPrompt}"/>
+                            <h:inputTextarea id="message" style="width: 90%; height: 100px"
+                                             value="${msm.messageToSend}">
+                                <f:ajax resetValues="true"/>
+                            </h:inputTextarea>
+                        </td>
+                        <td style="align-content: center">
+                            <h:commandButton value="#{msgs.sendButtonPrompt}" action="#{msm.sendMessage()}"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </h:form>
+</h:body>
+</html>
