@@ -3,6 +3,7 @@ package com.corejsf;
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.push.Push;
 import javax.faces.push.PushContext;
 import javax.inject.Inject;
@@ -21,7 +22,21 @@ public class Server {
     private ArrayList<Message> queuedMessages = new ArrayList<>();
     private HashMap<String, String> registeredUsers = new HashMap<>();
     private HashMap<String, String> userNotifications = new HashMap<>();
+    private String selectedMessage ="";
+    private String displayMessage ="";
 
+
+    public String getDisplayMessage() {
+        return displayMessage;
+    }
+
+    public void SetDisplayMessage(String displayMessage) {
+        this.displayMessage = displayMessage;
+    }
+
+    public void setSelectedMessage(String selectedMessage) {
+        this.selectedMessage = selectedMessage;
+    }
 
     // EXAMPLE DATA
     private ArrayList<String> exampleMessageTitles = new ArrayList<>(Arrays.asList("ASUNTO 1", "REUNION 1", "INPERICIA 1", "MEMO 2"));
@@ -38,6 +53,31 @@ public class Server {
 
     public ArrayList<String> getExampleMessageTitles() {
         return exampleMessageTitles;
+    }
+
+    public ArrayList<String> getUserMessageTitles() {
+        ArrayList<String> userMessageTitle = new ArrayList<>();
+        for(Message msg : queuedMessages){
+            if(msg.getReceiver().equals(user.getName()))
+                userMessageTitle.add(msg.getTitle());
+        }
+        return userMessageTitle;
+    }
+
+    public String getSelectedMessage() {
+        return selectedMessage;
+    }
+
+    public void setSelectedMessage(ValueChangeEvent e) {
+        String title = (String) e.getNewValue();
+        for(Message message : queuedMessages)
+        {
+            if(message.getTitle().equals(title))
+            {
+                displayMessage = "From: "+ message.getSender() + "\n" +"Title: "+ message.getTitle()+ "\n" + message.getMessage();
+                System.out.println("SET " + selectedMessage);
+            }
+        }
     }
 
     public void setExampleMessageTitles(ArrayList<String> exampleMessageTitles) {
@@ -67,6 +107,14 @@ public class Server {
 
     public String getUserMessageNotification() {
         return userNotifications.get(user.getName());
+    }
+    public void setUserMessageNotification(String message) {
+        userNotifications.replace(user.getName(),message);
+    }
+
+    public void RemoveMessageFromQueue(Message message)
+    {
+        queuedMessages.remove(message);
     }
 
     public boolean checkEmptyFields() {

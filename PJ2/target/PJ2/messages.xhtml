@@ -18,16 +18,22 @@
         <div class="main-container">
             <div class="inbox-container">
                 <h3 class="message-title">INBOX</h3>
-                <h:selectOneListbox id="messageTitles" size="10">
-                    <!--                 cambiar la lista de values-->
-                    <f:selectItems value="#{server.exampleMessageTitles}"/>
+                <h:selectOneListbox id="messageTitles" size="10"
+                                    value="#{msm.selectedMessage}"
+                                    valueChangeListener="#{msm.setSelectedMessage}"
+                                    onchange="submit()">
+                    <f:selectItems value="#{msm.getUserMessageTitles()}"/>
                 </h:selectOneListbox>
                 <h:commandButton id="viewmessage" value="#{msgs.loadMessages}" style="width: 75%"/>
                 <h:outputText id="newmsn" value="#{server.getUserMessageNotification()}"/>
             </div>
             <div class="chat-container">
                 <h3 class="welcome-title">Message</h3>
-                <h:inputTextarea id="messagesArea" style="width:100%; height:300px" disabled="true"/>
+                <h:inputTextarea id="messagesArea"
+                                 value="#{msm.displayMessage}"
+                                 style="width:100%;
+                                 height:300px"
+                                 disabled="true"/>
                 <br/>
                 <br/>
                 <table>

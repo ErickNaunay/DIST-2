@@ -40,6 +40,12 @@ public class UserBean implements Serializable {
         this.status = status;
     }
 
+
+    public void AddNewMessage(Message message)
+    {
+        receivedMessages.add(message);
+    }
+
     public ArrayList<Message> getSentMessages() {
         return sentMessages;
     }

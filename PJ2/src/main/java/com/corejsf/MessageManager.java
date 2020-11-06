@@ -3,6 +3,7 @@ package com.corejsf;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -17,6 +18,21 @@ public class MessageManager implements Serializable {
     private String messageToSend = "";
     private ArrayList<String> recipients = new ArrayList<>();
     private Boolean sendToAll = false;
+    private String selectedMessage ="";
+
+    public String getDisplayMessage() {
+        return displayMessage;
+    }
+
+    private String displayMessage ="";
+
+    public String getSelectedMessage() {
+        return selectedMessage;
+    }
+
+    public void setSelectedMessage(String selectedMessage) {
+        this.selectedMessage = selectedMessage;
+    }
 
     @Inject
     private UserBean user;
@@ -100,6 +116,42 @@ public class MessageManager implements Serializable {
         messageToSend = "";
         server.checkNewMessages();
         return null;
+    }
+
+    private void getMessagesFromServer() {
+        ArrayList<Message> messagesOfServer = new ArrayList<>(server.getQueuedMessages());
+        System.out.println(server.getQueuedMessages().size());
+        for(Message message :messagesOfServer )
+        {
+            if(message.getReceiver().equals(user.getName()))
+            {
+                user.AddNewMessage(message);
+                server.RemoveMessageFromQueue(message);
+            }
+        }
+        server.setUserMessageNotification("You don't have new messages");
+        System.out.println(server.getQueuedMessages().size());
+    }
+
+    public ArrayList<String> getUserMessageTitles() {
+        getMessagesFromServer();
+        ArrayList<String> userMessageTitle = new ArrayList<>();
+        for(Message msg : user.getReceivedMessages()){
+           userMessageTitle.add(msg.getTitle());
+        }
+        return userMessageTitle;
+    }
+
+    public void setSelectedMessage(ValueChangeEvent e) {
+        selectedMessage = (String) e.getNewValue();
+        for(Message message : user.getReceivedMessages())
+        {
+            if(message.getTitle().equals(selectedMessage))
+            {
+                displayMessage = "From: "+ message.getSender()+ " on "+ message.getDate() + "\n" +"Title: "+ message.getTitle()+ "\n" + message.getMessage();
+                System.out.println("SET " + selectedMessage);
+            }
+        }
     }
 
 }
