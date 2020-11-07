@@ -16,8 +16,8 @@
     <h:outputStylesheet library="css" name="style.css"/>
     <h:form>
         <f:websocket channel="incoming">
-        <f:ajax event="userChange"
-                execute="#{server.checkNewMessages()}" render="newmsn"/>
+            <f:ajax event="userChange"
+                    execute="#{server.checkNewMessages()}" render="newmsn"/>
         </f:websocket>
         <div class="main-container">
             <div class="inbox-container">
@@ -28,7 +28,7 @@
                     <f:ajax execute="@form" render="messagesArea"/>
                     <f:selectItems value="#{msm.getUserMessageTitles()}"/>
                 </h:selectOneListbox>
-                <h:commandButton id="viewmessage" value="#{msgs.loadMessages}" style="width: 75%"/>
+                <h:commandButton id="viewmessage" value="#{msgs.loadMessages}" action="#{msm.getMessagesFromServer()}" style="width: 75%"/>
                 <h:outputText id="newmsn" value="#{server.getUserMessageNotification()}"/>
             </div>
             <div class="chat-container">
@@ -43,7 +43,8 @@
                 <table>
                     <tr>
                         <td colspan="2">
-                            <h:commandButton value="#{msgs.deleteButtonPrompt}"/>
+                            <h:commandButton value="#{msgs.deleteButtonPrompt}"
+                                            action="#{msm.deleteReceivedMessage()}"/>
                         </td>
                     </tr>
                 </table>
