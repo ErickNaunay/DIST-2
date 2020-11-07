@@ -46,6 +46,11 @@ public class UserBean implements Serializable {
         receivedMessages.add(message);
     }
 
+    public void RemoveMessage(Message message)
+    {
+        receivedMessages.remove(message);
+    }
+
     public ArrayList<Message> getSentMessages() {
         return sentMessages;
     }

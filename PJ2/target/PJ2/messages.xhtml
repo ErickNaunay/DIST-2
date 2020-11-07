@@ -20,11 +20,11 @@
                 <h3 class="message-title">INBOX</h3>
                 <h:selectOneListbox id="messageTitles" size="10"
                                     value="#{msm.selectedMessage}"
-                                    valueChangeListener="#{msm.setSelectedMessage}"
-                                    onchange="submit()">
+                                    valueChangeListener="#{msm.setSelectedMessage}">
+                    <f:ajax execute="@form" render="messagesArea"/>
                     <f:selectItems value="#{msm.getUserMessageTitles()}"/>
                 </h:selectOneListbox>
-                <h:commandButton id="viewmessage" value="#{msgs.loadMessages}" style="width: 75%"/>
+                <h:commandButton id="viewmessage" value="#{msgs.loadMessages}" action="#{msm.getMessagesFromServer()}" style="width: 75%"/>
                 <h:outputText id="newmsn" value="#{server.getUserMessageNotification()}"/>
             </div>
             <div class="chat-container">
@@ -39,7 +39,8 @@
                 <table>
                     <tr>
                         <td colspan="2">
-                            <h:commandButton value="#{msgs.deleteButtonPrompt}"/>
+                            <h:commandButton value="#{msgs.deleteButtonPrompt}"
+                                            action="#{msm.deleteReceivedMessage()}"/>
                         </td>
                     </tr>
                 </table>

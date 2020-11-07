@@ -118,9 +118,8 @@ public class MessageManager implements Serializable {
         return null;
     }
 
-    private void getMessagesFromServer() {
+    public void getMessagesFromServer() {
         ArrayList<Message> messagesOfServer = new ArrayList<>(server.getQueuedMessages());
-        System.out.println(server.getQueuedMessages().size());
         for(Message message :messagesOfServer )
         {
             if(message.getReceiver().equals(user.getName()))
@@ -130,7 +129,6 @@ public class MessageManager implements Serializable {
             }
         }
         server.setUserMessageNotification("You don't have new messages");
-        System.out.println(server.getQueuedMessages().size());
     }
 
     public ArrayList<String> getUserMessageTitles() {
@@ -152,6 +150,30 @@ public class MessageManager implements Serializable {
                 System.out.println("SET " + selectedMessage);
             }
         }
+    }
+
+    public void deleteReceivedMessage(){
+        if(!user.getReceivedMessages().isEmpty())
+        {
+            ArrayList<Message> userMessages = new ArrayList<>(user.getReceivedMessages());
+            for(Message message : userMessages)
+            {
+                if(message.getTitle().equals(selectedMessage))
+                {
+                    user.RemoveMessage(message);
+                    break;
+                }
+            }
+            selectedMessage = "";
+            displayMessage = "";
+        }else{
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message1 = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "There are no messages selected to be removed",
+                    "Please be sure you are selecting a message to delete");
+            context.addMessage(null, message1);
+        }
+
     }
 
 }
