@@ -17,14 +17,23 @@ import java.util.HashMap;
 public class Server {
 
 
-    private ArrayList<String> onlineUsers = new ArrayList<>();
-    private ArrayList<String> offlineUsers = new ArrayList<>();
-    private ArrayList<Message> queuedMessages = new ArrayList<>();
-    private HashMap<String, String> registeredUsers = new HashMap<>();
-    private HashMap<String, String> userNotifications = new HashMap<>();
-    private String selectedMessage ="";
-    private String displayMessage ="";
-
+    private final ArrayList<String> onlineUsers = new ArrayList<>();
+    private final ArrayList<String> offlineUsers = new ArrayList<>();
+    private final ArrayList<Message> queuedMessages = new ArrayList<>();
+    private final HashMap<String, String> registeredUsers = new HashMap<>();
+    private final HashMap<String, String> userNotifications = new HashMap<>();
+    private String selectedMessage = "";
+    private String displayMessage = "";
+    // EXAMPLE DATA
+    private ArrayList<String> exampleMessageTitles = new ArrayList<>(Arrays.asList("ASUNTO 1", "REUNION 1", "INPERICIA 1", "MEMO 2"));
+    @Inject
+    private UserBean user;
+    @Inject
+    private MessageManager msnManager;
+    @Inject
+    @Push
+    private PushContext incoming;
+    // EXAMPLE DATA
 
     public String getDisplayMessage() {
         return displayMessage;
@@ -34,31 +43,18 @@ public class Server {
         this.displayMessage = displayMessage;
     }
 
-    public void setSelectedMessage(String selectedMessage) {
-        this.selectedMessage = selectedMessage;
-    }
-
-    // EXAMPLE DATA
-    private ArrayList<String> exampleMessageTitles = new ArrayList<>(Arrays.asList("ASUNTO 1", "REUNION 1", "INPERICIA 1", "MEMO 2"));
-    // EXAMPLE DATA
-
-    @Inject
-    private UserBean user;
-    @Inject
-    private MessageManager msnManager;
-
-    @Inject
-    @Push
-    private PushContext incoming;
-
     public ArrayList<String> getExampleMessageTitles() {
         return exampleMessageTitles;
     }
 
+    public void setExampleMessageTitles(ArrayList<String> exampleMessageTitles) {
+        this.exampleMessageTitles = exampleMessageTitles;
+    }
+
     public ArrayList<String> getUserMessageTitles() {
         ArrayList<String> userMessageTitle = new ArrayList<>();
-        for(Message msg : queuedMessages){
-            if(msg.getReceiver().equals(user.getName()))
+        for (Message msg : queuedMessages) {
+            if (msg.getReceiver().equals(user.getName()))
                 userMessageTitle.add(msg.getTitle());
         }
         return userMessageTitle;
@@ -68,20 +64,18 @@ public class Server {
         return selectedMessage;
     }
 
+    public void setSelectedMessage(String selectedMessage) {
+        this.selectedMessage = selectedMessage;
+    }
+
     public void setSelectedMessage(ValueChangeEvent e) {
         String title = (String) e.getNewValue();
-        for(Message message : queuedMessages)
-        {
-            if(message.getTitle().equals(title))
-            {
-                displayMessage = "From: "+ message.getSender() + "\n" +"Title: "+ message.getTitle()+ "\n" + message.getMessage();
+        for (Message message : queuedMessages) {
+            if (message.getTitle().equals(title)) {
+                displayMessage = "From: " + message.getSender() + "\n" + "Title: " + message.getTitle() + "\n" + message.getMessage();
                 System.out.println("SET " + selectedMessage);
             }
         }
-    }
-
-    public void setExampleMessageTitles(ArrayList<String> exampleMessageTitles) {
-        this.exampleMessageTitles = exampleMessageTitles;
     }
 
     // helper methods
@@ -108,12 +102,12 @@ public class Server {
     public String getUserMessageNotification() {
         return userNotifications.get(user.getName());
     }
+
     public void setUserMessageNotification(String message) {
-        userNotifications.replace(user.getName(),message);
+        userNotifications.replace(user.getName(), message);
     }
 
-    public void RemoveMessageFromQueue(Message message)
-    {
+    public void RemoveMessageFromQueue(Message message) {
         queuedMessages.remove(message);
     }
 

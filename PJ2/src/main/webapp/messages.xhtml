@@ -15,13 +15,17 @@
     <br/><br/>
     <h:outputStylesheet library="css" name="style.css"/>
     <h:form>
+        <f:websocket channel="incoming">
+            <f:ajax event="userChange"
+                    execute="#{server.checkNewMessages()}" render="newmsn"/>
+        </f:websocket>
         <div class="main-container">
             <div class="inbox-container">
                 <h3 class="message-title">INBOX</h3>
                 <h:selectOneListbox id="messageTitles" size="10"
                                     value="#{msm.selectedMessage}"
-                                    valueChangeListener="#{msm.setSelectedMessage}"
-                                    onchange="submit()">
+                                    valueChangeListener="#{msm.setSelectedMessage}">
+                    <f:ajax execute="@form" render="messagesArea"/>
                     <f:selectItems value="#{msm.getUserMessageTitles()}"/>
                 </h:selectOneListbox>
                 <h:commandButton id="viewmessage" value="#{msgs.loadMessages}" style="width: 75%"/>

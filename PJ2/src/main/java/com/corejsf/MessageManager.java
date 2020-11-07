@@ -18,13 +18,16 @@ public class MessageManager implements Serializable {
     private String messageToSend = "";
     private ArrayList<String> recipients = new ArrayList<>();
     private Boolean sendToAll = false;
-    private String selectedMessage ="";
+    private String selectedMessage = "";
+    private String displayMessage = "";
+    @Inject
+    private UserBean user;
+    @Inject
+    private Server server;
 
     public String getDisplayMessage() {
         return displayMessage;
     }
-
-    private String displayMessage ="";
 
     public String getSelectedMessage() {
         return selectedMessage;
@@ -34,10 +37,15 @@ public class MessageManager implements Serializable {
         this.selectedMessage = selectedMessage;
     }
 
-    @Inject
-    private UserBean user;
-    @Inject
-    private Server server;
+    public void setSelectedMessage(ValueChangeEvent e) {
+        selectedMessage = (String) e.getNewValue();
+        for (Message message : user.getReceivedMessages()) {
+            if (message.getTitle().equals(selectedMessage)) {
+                displayMessage = "From: " + message.getSender() + " on " + message.getDate() + "\n" + "Title: " + message.getTitle() + "\n" + message.getMessage();
+                System.out.println("SET " + selectedMessage);
+            }
+        }
+    }
 
     public String getMessageTitle() {
         return messageTitle;
@@ -71,13 +79,12 @@ public class MessageManager implements Serializable {
         this.sendToAll = sendToAll;
     }
 
-    public void selectAllRecipients(){
+    public void selectAllRecipients() {
         System.out.println("value changed to: " + sendToAll);
 
-        if(sendToAll){
+        if (sendToAll) {
             recipients.addAll(server.getRegisteredUsers().keySet());
-        }
-        else{
+        } else {
             recipients.clear();
         }
 
@@ -121,10 +128,8 @@ public class MessageManager implements Serializable {
     private void getMessagesFromServer() {
         ArrayList<Message> messagesOfServer = new ArrayList<>(server.getQueuedMessages());
         System.out.println(server.getQueuedMessages().size());
-        for(Message message :messagesOfServer )
-        {
-            if(message.getReceiver().equals(user.getName()))
-            {
+        for (Message message : messagesOfServer) {
+            if (message.getReceiver().equals(user.getName())) {
                 user.AddNewMessage(message);
                 server.RemoveMessageFromQueue(message);
             }
@@ -136,22 +141,10 @@ public class MessageManager implements Serializable {
     public ArrayList<String> getUserMessageTitles() {
         getMessagesFromServer();
         ArrayList<String> userMessageTitle = new ArrayList<>();
-        for(Message msg : user.getReceivedMessages()){
-           userMessageTitle.add(msg.getTitle());
+        for (Message msg : user.getReceivedMessages()) {
+            userMessageTitle.add(msg.getTitle());
         }
         return userMessageTitle;
-    }
-
-    public void setSelectedMessage(ValueChangeEvent e) {
-        selectedMessage = (String) e.getNewValue();
-        for(Message message : user.getReceivedMessages())
-        {
-            if(message.getTitle().equals(selectedMessage))
-            {
-                displayMessage = "From: "+ message.getSender()+ " on "+ message.getDate() + "\n" +"Title: "+ message.getTitle()+ "\n" + message.getMessage();
-                System.out.println("SET " + selectedMessage);
-            }
-        }
     }
 
 }
